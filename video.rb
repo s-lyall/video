@@ -39,17 +39,34 @@ class Shop
 
     loop do
       print "Enter Movie Title: "
-      title = gets.chomp
+      title = gets.chomp.downcase
       break if title == "123"
       puts
       print "Number of Days: "
       duration = gets.chomp
-      @customer.rentals.push([title, duration])
+      # @customer.rentals.push([title, duration])
+      add_to_rentals(title)
     end
 
     p @customer.rentals
     print_invoice
   end
+
+  def add_to_rentals(title)
+    #add movie obj & duration
+    @exists = "false"
+    @library.each do |movie|
+      if movie.title == title
+        @customer.rentals.push(movie)
+        @exists = "true"
+      end
+    end
+    if @exists == "false"
+      puts "Title Not Found!"
+    end
+  end
+
+
 
   def print_invoice
     puts
