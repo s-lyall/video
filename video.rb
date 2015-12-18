@@ -45,19 +45,19 @@ class Shop
       print "Number of Days: "
       duration = gets.chomp
       # @customer.rentals.push([title, duration])
-      add_to_rentals(title)
+      add_to_rentals(title, duration)
     end
-
+    puts "customer.rentals = "
     p @customer.rentals
     print_invoice
   end
 
-  def add_to_rentals(title)
+  def add_to_rentals(title, duration)
     #add movie obj & duration
     @exists = "false"
     @library.each do |movie|
       if movie.title == title
-        @customer.rentals.push(movie)
+        @customer.rentals.push([movie, duration])
         @exists = "true"
       end
     end
@@ -77,20 +77,28 @@ class Shop
     puts
 
     @customer.rentals.each do |rental|
-      title = rental[0]
+      movie = rental[0]
+      title = movie.title
+      type = movie.type
+      price = movie.price
       duration = rental[1]
-      puts "#{title}\t\t#{duration}\t#{duration}\t#{duration}"
+      #puts "#{title}\t\t#{type}\t#{duration}\t#{price}"
+      puts "#{title}".ljust(15) + "\t#{type}\t#{duration}\t#{price}"
+
+
+      @customer.to_pay += duration.to_f * price.to_f
+      @customer.frequent_renter_points += 1
     end
 
     puts
-    puts "** Amount owed is 777"
+    puts "** Amount owed is #{@customer.to_pay}"
     puts "** You earned 4 frequent renter points"
   end
 
   def load_library
-    @library.push Movie.new("the godfather", "R")
+    @library.push Movie.new("godfather", "R")
     @library.push Movie.new("jungle book", "C")
-    @library.push Movie.new("the martian", "N")
+    @library.push Movie.new("martian", "N")
     @library.push Movie.new("metropolis", "O")
   end
 
@@ -135,11 +143,13 @@ class Movie
 end
 
 class Customer
-  attr_accessor :name, :rentals
+  attr_accessor :name, :rentals, :to_pay, :frequent_renter_points
 
   def initialize(name)
     @name = name
     @rentals = []
+    @to_pay = 0
+    @frequent_renter_points = 0
   end
 end
 
