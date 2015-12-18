@@ -1,3 +1,5 @@
+#require titleize.rb
+
 class Shop
   attr_accessor :library, :r_price, :c_price, :n_price, :o_price
 
@@ -28,22 +30,44 @@ class Shop
   end
 
   def create_invoice
-    puts ""
+    puts
     puts "Creating Invoice...(enter '123' when you are finished!)"
     puts "Enter Customer Name: "
     name = gets.chomp
-    @customer_2 = Customer.new(name)
-    puts "customer 2 = " + @customer_2.name
+    @customer = Customer.new(name)
+    puts "customer = " + @customer.name
 
     loop do
       print "Enter Movie Title: "
       title = gets.chomp
       break if title == "123"
-      puts ""
+      puts
       print "Number of Days: "
       duration = gets.chomp
+      @customer.rentals.push([title, duration])
     end
 
+    p @customer.rentals
+    print_invoice
+  end
+
+  def print_invoice
+    puts
+    puts "Record for Stewart:"
+    puts
+    #puts " %-20s %05d" % ['Movie', 12]
+    puts "Movie\t\tType\tDays\tPrice"
+    puts
+
+    @customer.rentals.each do |rental|
+      title = rental[0]
+      duration = rental[1]
+      puts "#{title}\t\t#{duration}\t#{duration}\t#{duration}"
+    end
+
+    puts
+    puts "** Amount owed is 777"
+    puts "** You earned 4 frequent renter points"
   end
 
   def load_library
@@ -55,7 +79,7 @@ class Shop
 
   def print_library
     @library.each do |movie|
-      puts""
+      puts
       puts "Title: " + movie.title
       puts "Type: " + movie.type
       puts "Price per day: " + movie.price.to_s
@@ -103,5 +127,3 @@ class Customer
 end
 
 @shop = Shop.new
-@customer = Customer.new("bob")
-puts @customer.name
