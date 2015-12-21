@@ -140,16 +140,16 @@ class Shop
   end
 
   def print_library
+    puts "Movie\t\tType\tPrice Per Day"
+    puts
     @library.each do |movie|
-      puts
-      puts "Title: " + movie.title
-      puts "Type: " + movie.type
-      puts "Price per day: " + movie.price.to_s
+      # puts "Title: " + movie.title
+      # puts "Type: " + movie.type
+      # puts "Price per day: " + movie.price.to_s
+      puts "#{movie.title}".ljust(15) + "\t#{movie.type}\t#{movie.price.to_s}"
     end
   end
-
 end
-
 
 
 class Movie
