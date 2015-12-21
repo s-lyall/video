@@ -70,7 +70,7 @@ class Shop
 
   def print_invoice
     puts
-    puts "Record for Stewart:"
+    puts "Record for #{@customer.name.capitalize}:"
     puts
     #puts " %-20s %05d" % ['Movie', 12]
     puts "Movie\t\tType\tDays\tPrice"
@@ -86,7 +86,8 @@ class Shop
       puts "#{title}".ljust(15) + "\t#{type}\t#{duration}\t#{price}"
 
 
-      @customer.to_pay += duration.to_f * price.to_f
+      #@customer.to_pay += duration.to_f * price.to_f
+      @cost_for_single_film
       @customer.frequent_renter_points += 1
     end
 
@@ -95,11 +96,47 @@ class Shop
     puts "** You earned 4 frequent renter points"
   end
 
+  def cost_for_single_film
+    # regular price for all films is 1.5
+
+    # new releases cost 3 for EVERY day
+    if movie.type == "N"
+      @customer.to_pay += duration.to_f * price.to_f
+      # bonus frequent renter point for 2 day new rental release
+      if duration.to_i > 1
+        customer.frequent_renter_points += 1
+      end
+    end
+
+    # childrens films cost 1.5 for first 3 days
+    if movie.type == "C"
+      if duration < 4
+        @customer.to_pay += price.to_f
+      else
+        @customer.to_pay += price.to_f + (price.to_f * (duration.to_f - 3))
+      end
+    end
+
+    # regular films cost 2 for the first 2 days
+    if movie.type == "R"
+      if duration < 3
+        @customer.to_pay += price.to_f
+      else
+        @customer.to_pay += price.to_f + (price.to_f * (duration.to_f - 2))
+      end
+    end
+  end
+
   def load_library
     @library.push Movie.new("godfather", "R")
     @library.push Movie.new("jungle book", "C")
     @library.push Movie.new("martian", "N")
-    @library.push Movie.new("metropolis", "O")
+    @library.push Movie.new("metropolis", "R")
+    @library.push Movie.new("m", "R")
+    @library.push Movie.new("a", "N")
+    @library.push Movie.new("b", "N")
+    @library.push Movie.new("c", "C")
+    @library.push Movie.new("d", "C")
   end
 
   def print_library
@@ -121,7 +158,7 @@ class Movie
     @r_price = 2
     @c_price = 1.5
     @n_price = 3
-    @o_price = 1.5
+    #@o_price = 1.5
 
     @title = title
     @type = type
@@ -130,14 +167,10 @@ class Movie
 
   def get_price(type)
     case type
-    when "R"
-      @r_price
-    when "C"
-      @c_price
     when "N"
       @n_price
-    when "O"
-      @o_price
+    else
+      @r_price
     end
   end
 end
