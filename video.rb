@@ -1,10 +1,7 @@
-#require titleize.rb
-
 class Shop
   attr_accessor :library, :r_price, :c_price, :n_price, :o_price
 
   def initialize
-    #@library = godfather: "R", junglebook: "C", themartian: "N", metropolis: "O"}
     @library = Array.new
     load_library
     print_library
@@ -66,13 +63,10 @@ class Shop
     end
   end
 
-
-
   def print_invoice
     puts
     puts "Record for #{@customer.name.capitalize}:"
     puts
-    #puts " %-20s %05d" % ['Movie', 12]
     puts "Movie\t\tType\tDays\tPrice"
     puts
 
@@ -82,12 +76,12 @@ class Shop
       type = movie.type
       price = movie.price
       duration = rental[1]
+
       #puts "#{title}\t\t#{type}\t#{duration}\t#{price}"
       puts "#{title}".ljust(15) + "\t#{type}\t#{duration}\t#{price}"
 
-
       #@customer.to_pay += duration.to_f * price.to_f
-      @cost_for_single_film
+      cost_for_single_film(type, duration, price)
       @customer.frequent_renter_points += 1
     end
 
@@ -96,21 +90,21 @@ class Shop
     puts "** You earned 4 frequent renter points"
   end
 
-  def cost_for_single_film
+  def cost_for_single_film(type, duration, price)
     # regular price for all films is 1.5
 
     # new releases cost 3 for EVERY day
-    if movie.type == "N"
+    if type == "N"
       @customer.to_pay += duration.to_f * price.to_f
       # bonus frequent renter point for 2 day new rental release
       if duration.to_i > 1
-        customer.frequent_renter_points += 1
+        @customer.frequent_renter_points += 1
       end
     end
 
     # childrens films cost 1.5 for first 3 days
-    if movie.type == "C"
-      if duration < 4
+    if type == "C"
+      if duration.to_i < 4
         @customer.to_pay += price.to_f
       else
         @customer.to_pay += price.to_f + (price.to_f * (duration.to_f - 3))
@@ -118,8 +112,8 @@ class Shop
     end
 
     # regular films cost 2 for the first 2 days
-    if movie.type == "R"
-      if duration < 3
+    if type == "R"
+      if duration.to_i < 3
         @customer.to_pay += price.to_f
       else
         @customer.to_pay += price.to_f + (price.to_f * (duration.to_f - 2))
@@ -150,7 +144,6 @@ class Shop
     end
   end
 end
-
 
 class Movie
   attr_accessor :title, :type, :price
