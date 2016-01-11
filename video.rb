@@ -87,7 +87,7 @@ class Shop
 
     puts
     puts "** Amount owed is #{@customer.to_pay}"
-    puts "** You earned 4 frequent renter points"
+    puts "** You earned #{@customer.frequent_renter_points} frequent renter points"
   end
 
   def cost_for_single_film(type, duration, price)
@@ -137,9 +137,6 @@ class Shop
     puts "Movie\t\tType\tPrice Per Day"
     puts
     @library.each do |movie|
-      # puts "Title: " + movie.title
-      # puts "Type: " + movie.type
-      # puts "Price per day: " + movie.price.to_s
       puts "#{movie.title}".ljust(15) + "\t#{movie.type}\t#{movie.price.to_s}"
     end
   end
@@ -180,3 +177,5 @@ class Customer
 end
 
 @shop = Shop.new
+
+
