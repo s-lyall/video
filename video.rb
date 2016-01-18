@@ -55,6 +55,7 @@ class Shop
     @library.each do |movie|
       if movie.title == title
         @customer.rentals.push([movie, duration])
+        @customer.add_rental(movie, duration)
         @exists = "true"
       end
     end
@@ -83,6 +84,7 @@ class Shop
       #@customer.to_pay += duration.to_f * price.to_f
       cost_for_single_film(type, duration, price)
       @customer.frequent_renter_points += 1
+      @customer.earns_rental_points(1)
     end
 
     puts
@@ -152,11 +154,13 @@ class Movie
 
     @title = title
     @type = type
-    @price = get_price(@type)
+    @price = get_price
   end
 
-  def get_price(type)
-    case type
+  private 
+
+  def get_price
+    case @type
     when "N"
       @n_price
     else
@@ -166,13 +170,20 @@ class Movie
 end
 
 class Customer
-  attr_accessor :name, :rentals, :to_pay, :frequent_renter_points
+  attr_reader :name, :rentals, :to_pay, :frequent_renter_points
 
   def initialize(name)
     @name = name
     @rentals = []
     @to_pay = 0
     @frequent_renter_points = 0
+  end
+  def rentals
+      @rentals
+  end
+
+  def add_rentals(movie, duration)
+    cost_for_single_film(movie.type, duration, movie.price)
   end
 end
 
