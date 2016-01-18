@@ -1,5 +1,5 @@
 class Shop
-  attr_accessor :library, :r_price, :c_price, :n_price, :o_price
+  attr_accessor :library, :r_price_per_day, :c_price_per_day, :n_price_per_day, :o_price_per_day
 
   def initialize
     @library = Array.new
@@ -67,21 +67,21 @@ class Shop
     puts
     puts "Record for #{@customer.name.capitalize}:"
     puts
-    puts "Movie\t\tType\tDays\tPrice"
+    puts "Movie\t\tType\tDays\tprice_per_day"
     puts
 
     @customer.rentals.each do |rental|
       movie = rental[0]
       title = movie.title
       type = movie.type
-      price = movie.price
+      price_per_day = movie.price_per_day
       duration = rental[1]
 
-      #puts "#{title}\t\t#{type}\t#{duration}\t#{price}"
-      puts "#{title}".ljust(15) + "\t#{type}\t#{duration}\t#{price}"
+      #puts "#{title}\t\t#{type}\t#{duration}\t#{price_per_day}"
+      puts "#{title}".ljust(15) + "\t#{type}\t#{duration}\t#{price_per_day}"
 
-      #@customer.to_pay += duration.to_f * price.to_f
-      cost_for_single_film(type, duration, price)
+      #@customer.to_pay += duration.to_f * price_per_day.to_f
+      cost_for_single_film(type, duration, price_per_day)
       @customer.frequent_renter_points += 1
     end
 
@@ -90,12 +90,12 @@ class Shop
     puts "** You earned #{@customer.frequent_renter_points} frequent renter points"
   end
 
-  def cost_for_single_film(type, duration, price)
-    # regular price for all films is 1.5
+  def cost_for_single_film(type, duration, price_per_day)
+    # regular price_per_day for all films is 1.5
 
     # new releases cost 3 for EVERY day
     if type == "N"
-      @customer.to_pay += duration.to_f * price.to_f
+      @customer.to_pay += duration.to_f * price_per_day.to_f
       # bonus frequent renter point for 2 day new rental release
       if duration.to_i > 1
         @customer.frequent_renter_points += 1
@@ -105,18 +105,18 @@ class Shop
     # childrens films cost 1.5 for first 3 days
     if type == "C"
       if duration.to_i < 4
-        @customer.to_pay += price.to_f
+        @customer.to_pay += price_per_day.to_f
       else
-        @customer.to_pay += price.to_f + (price.to_f * (duration.to_f - 3))
+        @customer.to_pay += price_per_day.to_f + (price_per_day.to_f * (duration.to_f - 3))
       end
     end
 
     # regular films cost 2 for the first 2 days
     if type == "R"
       if duration.to_i < 3
-        @customer.to_pay += price.to_f
+        @customer.to_pay += price_per_day.to_f
       else
-        @customer.to_pay += price.to_f + (price.to_f * (duration.to_f - 2))
+        @customer.to_pay += price_per_day.to_f + (price_per_day.to_f * (duration.to_f - 2))
       end
     end
   end
@@ -134,33 +134,33 @@ class Shop
   end
 
   def print_library
-    puts "Movie\t\tType\tPrice Per Day"
+    puts "Movie\t\tType\tprice_per_day Per Day"
     puts
     @library.each do |movie|
-      puts "#{movie.title}".ljust(15) + "\t#{movie.type}\t#{movie.price.to_s}"
+      puts "#{movie.title}".ljust(15) + "\t#{movie.type}\t#{movie.price_per_day.to_s}"
     end
   end
 end
 
 class Movie
-  attr_accessor :title, :type, :price
+  attr_accessor :title, :type, :price_per_day
   def initialize(title, type)
-    @r_price = 2
-    @c_price = 1.5
-    @n_price = 3
-    #@o_price = 1.5
+    @r_price_per_day = 2
+    @c_price_per_day = 1.5
+    @n_price_per_day = 3
+    #@o_price_per_day = 1.5
 
     @title = title
     @type = type
-    @price = get_price(@type)
+    @price_per_day = get_price_per_day(@type)
   end
 
-  def get_price(type)
+  def get_price_per_day(type)
     case type
     when "N"
-      @n_price
+      @n_price_per_day
     else
-      @r_price
+      @r_price_per_day
     end
   end
 end
