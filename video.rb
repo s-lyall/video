@@ -98,7 +98,8 @@ class Shop
       @customer.to_pay += duration.to_f * price_per_day.to_f
       # bonus frequent renter point for 2 day new rental release
       if duration.to_i > 1
-        @customer.frequent_renter_points += 1
+        # @customer.frequent_renter_points += 1
+        @customer.add_frequent_renter_point
       end
     end
 
@@ -174,8 +175,9 @@ class Customer
     @to_pay = 0
     @frequent_renter_points = 0
   end
-end
 
-@shop = Shop.new
+  def add_frequent_renter_point
+    @frequent_renter_points += 1
+  end
 
-
+  @shop = Shop.new
