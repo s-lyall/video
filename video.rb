@@ -1,29 +1,19 @@
+#require 'interface.rb'
+require_relative 'interface.rb'
+require 'pry'
+
+
+
 class Shop
+
   attr_accessor :library, :r_price_per_day, :c_price_per_day, :n_price_per_day, :o_price_per_day
 
   def initialize
     @library = Array.new
-    load_library
-    print_library
-    interface
-  end
 
-  def interface
-    while true
-      puts
-      puts "Commands: invoice, list"
-      puts "'CTRL C' to exit"
-      input = gets.chomp
-
-      case input
-      when "invoice", "i"
-        create_invoice
-      when "list", "l"
-        print_library
-      else
-        puts "Invalid Command!"
-      end
-    end
+    #load_library
+    # print_library
+    #interface
   end
 
   def create_invoice
@@ -179,5 +169,11 @@ class Customer
   def add_frequent_renter_point
     @frequent_renter_points += 1
   end
+end
 
-  @shop = Shop.new
+@shop = Shop.new
+@shop.load_library
+@shop.print_library
+#binding.pry
+@interface = Interface.new(@shop)
+@interface.start_interface
